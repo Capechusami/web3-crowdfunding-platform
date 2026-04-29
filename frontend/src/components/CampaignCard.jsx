@@ -1,149 +1,134 @@
 "use client";
 
 import Link from "next/link";
-import { formatEth, shortAddress, timeLeft, progressPercent, formatDeadline } from "@/utils/format";
-import { ethers } from "ethers";
+import { motion } from "framer-motion";
+import { formatEth, timeLeft, progressPercent } from "@/utils/format";
+import { getCampaignCategory, getCampaignName, getCampaignDescription } from "@/utils/campaignMeta";
 
 export default function CampaignCard({ campaign }) {
-  const { id, creator, goal, totalRaised, deadline, withdrawn } = campaign;
+  const { id, goal, totalRaised, deadline, withdrawn, title, description, image } = campaign;
 
-  const pct      = progressPercent(totalRaised, goal);
-  const ended    = Date.now() / 1000 >= Number(deadline);
-  const success  = ended && totalRaised >= goal;
-  const failed   = ended && totalRaised < goal;
+  const now = BigInt(Math.floor(Date.now() / 1000));
+  const ended = now >= BigInt(deadline);
+  const success = ended && BigInt(totalRaised) >= BigInt(goal);
+  const failed = ended && BigInt(totalRaised) < BigInt(goal);
+  const pct = progressPercent(totalRaised, goal);
+  const category = getCampaignCategory(id);
+
+  // Use real metadata if available, fallback to mock
+  const displayTitle = title || getCampaignName(id);
+  const displayDesc = description || getCampaignDescription(id);
 
   return (
-    <div className="flex flex-col rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-      {/* Status bar */}
-      <div
-        className={`h-1 w-full ${
-          success
-            ? "bg-green-500"
-            : failed
-            ? "bg-red-400"
-            : "bg-indigo-500"
-        }`}
-        style={{ width: `${pct}%`, minWidth: "4px" }}
-      />
-
-      <div className="flex flex-col gap-4 p-5">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <p className="text-xs text-gray-400 uppercase tracking-wide">Campaign</p>
-            <p className="text-xl font-bold text-gray-900 dark:text-white">
-              #{id}
-            </p>
+    <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.2 }}>
+      <Link
+        href={`/campaign/${id}`}
+        className="group block bg-white border-2 border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all h-full"
+      >
+        {/* Image area */}
+        <div className={`relative aspect-[4/3] overflow-hidden ${image ? "bg-gray-100" : `bg-gradient-to-br ${category.color}`}`}>
+          {image && (
+            <img
+              src={image}
+              alt={displayTitle}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
+          <div className="absolute top-3 left-3">
+            <span className="badge bg-white/90 text-gray-900 backdrop-blur-sm">
+              {category.name}
+            </span>
           </div>
           <StatusBadge success={success} failed={failed} withdrawn={withdrawn} />
+          <div className="absolute bottom-3 left-3 right-3">
+            <p className="text-white/90 text-xs font-medium uppercase tracking-wider drop-shadow">
+              Campaign #{id}
+            </p>
+          </div>
         </div>
 
-        {/* Creator */}
-        <div>
-          <p className="text-xs text-gray-400 mb-0.5">Creator</p>
-          <p className="font-mono text-xs text-gray-600 dark:text-gray-400">
-            {shortAddress(creator, 6)}
+        {/* Content */}
+        <div className="p-5">
+          {/* Title */}
+          <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2 leading-snug group-hover:text-emerald-600 transition-colors">
+            {displayTitle}
+          </h3>
+
+          {/* Description */}
+          <p className="text-xs text-gray-500 line-clamp-2 mb-4 leading-relaxed">
+            {displayDesc}
           </p>
-        </div>
 
-        {/* Progress bar */}
-        <div>
-          <div className="flex justify-between text-xs text-gray-500 mb-1.5">
-            <span className="font-medium text-gray-800 dark:text-gray-200">
-              {formatEth(totalRaised)} ETH raised
+          {/* Progress */}
+          <div className="mb-4">
+            <div className="flex items-center justify-between text-xs mb-2">
+              <span className="text-gray-500 font-medium">Raised</span>
+              <span className="text-emerald-600 font-bold">
+                {pct.toFixed(0)}% • {timeLeft(deadline)}
+              </span>
+            </div>
+            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+              <motion.div
+                className={`h-full rounded-full ${
+                  success
+                    ? "bg-gradient-to-r from-emerald-500 to-green-400"
+                    : failed
+                    ? "bg-gradient-to-r from-red-500 to-rose-400"
+                    : "bg-gradient-to-r from-emerald-500 to-teal-500"
+                }`}
+                initial={{ width: 0 }}
+                whileInView={{ width: `${pct}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+              />
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between pt-3 border-t border-gray-50">
+            <div>
+              <p className="text-base font-bold text-gray-900">
+                {formatEth(totalRaised)} ETH
+              </p>
+              <p className="text-xs text-gray-400">
+                Funded of {formatEth(goal)} ETH
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-emerald-500 text-emerald-600 text-xs font-semibold group-hover:bg-emerald-500 group-hover:text-white transition-all">
+              Donate
             </span>
-            <span>of {formatEth(goal)} ETH</span>
           </div>
-          <div className="h-2 w-full rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all ${
-                success ? "bg-green-500" : failed ? "bg-red-400" : "bg-indigo-500"
-              }`}
-              style={{ width: `${pct}%` }}
-            />
-          </div>
-          <p className="text-right text-xs text-gray-400 mt-1">{pct.toFixed(1)}%</p>
         </div>
-
-        {/* Stats row */}
-        <div className="grid grid-cols-2 gap-3">
-          <StatBox label="Goal" value={`${formatEth(goal)} ETH`} />
-          <StatBox
-            label={ended ? "Total Raised" : "Raised So Far"}
-            value={`${formatEth(totalRaised)} ETH`}
-          />
-          <StatBox
-            label="Deadline"
-            value={formatDeadline(deadline)}
-            sub={timeLeft(deadline)}
-            highlight={!ended}
-          />
-          <StatBox
-            label="Status"
-            value={
-              withdrawn
-                ? "Withdrawn"
-                : success
-                ? "Goal Reached"
-                : failed
-                ? "Failed"
-                : "Active"
-            }
-          />
-        </div>
-
-        {/* View link */}
-        <Link
-          href={`/campaign/${id}`}
-          className="mt-1 rounded-lg border border-indigo-200 dark:border-indigo-800 px-4 py-2 text-center text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors"
-        >
-          View Campaign →
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-function StatBox({ label, value, sub, highlight }) {
-  return (
-    <div className="rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2">
-      <p className="text-xs text-gray-400 mb-0.5">{label}</p>
-      <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight">
-        {value}
-      </p>
-      {sub && (
-        <p className={`text-xs mt-0.5 ${highlight ? "text-indigo-500" : "text-gray-400"}`}>
-          {sub}
-        </p>
-      )}
-    </div>
+      </Link>
+    </motion.div>
   );
 }
 
 function StatusBadge({ success, failed, withdrawn }) {
   if (withdrawn) {
     return (
-      <span className="rounded-full bg-gray-100 dark:bg-gray-800 px-2.5 py-1 text-xs font-medium text-gray-500">
+      <span className="absolute top-3 right-3 badge bg-gray-700/90 text-white backdrop-blur-sm">
         Withdrawn
       </span>
     );
   }
   if (success) {
     return (
-      <span className="rounded-full bg-green-100 dark:bg-green-900/30 px-2.5 py-1 text-xs font-medium text-green-700 dark:text-green-400">
-        Success
+      <span className="absolute top-3 right-3 badge bg-emerald-500/95 text-white backdrop-blur-sm">
+        Funded
       </span>
     );
   }
   if (failed) {
     return (
-      <span className="rounded-full bg-red-100 dark:bg-red-900/30 px-2.5 py-1 text-xs font-medium text-red-600 dark:text-red-400">
+      <span className="absolute top-3 right-3 badge bg-red-500/95 text-white backdrop-blur-sm">
         Failed
       </span>
     );
   }
   return (
-    <span className="rounded-full bg-indigo-100 dark:bg-indigo-900/30 px-2.5 py-1 text-xs font-medium text-indigo-700 dark:text-indigo-400">
+    <span className="absolute top-3 right-3 badge bg-emerald-500/95 text-white backdrop-blur-sm">
       Active
     </span>
   );

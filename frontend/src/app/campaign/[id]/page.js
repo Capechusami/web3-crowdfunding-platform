@@ -1,22 +1,18 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { useCampaign } from "@/hooks/useCampaigns";
 import { useWeb3 } from "@/context/Web3Context";
 import DonateForm from "@/components/DonateForm";
 import WithdrawButton from "@/components/WithdrawButton";
 import RefundButton from "@/components/RefundButton";
-import {
-  formatEth,
-  shortAddress,
-  timeLeft,
-  formatDeadline,
-  progressPercent,
-} from "@/utils/format";
+import { formatEth, shortAddress, timeLeft, formatDeadline, progressPercent } from "@/utils/format";
+import { getCampaignCategory, getCampaignName, getCampaignDescription, getCreatorName } from "@/utils/campaignMeta";
 
 export default function CampaignPage() {
-  const { id }   = useParams();
-  const router   = useRouter();
+  const { id } = useParams();
+  const router = useRouter();
   const { account } = useWeb3();
   const { campaign, loading, error, refetch } = useCampaign(id);
 
@@ -24,139 +20,218 @@ export default function CampaignPage() {
 
   if (error || !campaign) {
     return (
-      <div className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 px-6 py-8 text-center">
-        <p className="text-red-600 dark:text-red-400 font-medium mb-2">
-          {error || "Campaign not found"}
-        </p>
-        <button
-          onClick={() => router.push("/")}
-          className="text-sm text-indigo-600 underline"
-        >
-          Back to home
-        </button>
-      </div>
+      <main className="bg-white min-h-screen pt-32 pb-20">
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="bg-white border border-gray-200 rounded-2xl p-12 text-center shadow-sm">
+            <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" /><path d="M15 9l-6 6M9 9l6 6" />
+              </svg>
+            </div>
+            <p className="text-red-600 font-medium mb-4">{error || "Campaign not found"}</p>
+            <button onClick={() => router.push("/explore")} className="btn-secondary text-sm">
+              Back to Explore
+            </button>
+          </div>
+        </div>
+      </main>
     );
   }
 
-  const { creator, goal, totalRaised, deadline, withdrawn } = campaign;
-
-  const now        = BigInt(Math.floor(Date.now() / 1000));
-  const ended      = now >= BigInt(deadline);
-  const success    = ended && BigInt(totalRaised) >= BigInt(goal);
-  const failed     = ended && BigInt(totalRaised) < BigInt(goal);
-  const pct        = progressPercent(totalRaised, goal);
-  const isCreator  = account?.toLowerCase() === creator?.toLowerCase();
+  const { creator, goal, totalRaised, deadline, withdrawn, image } = campaign;
+  const now = BigInt(Math.floor(Date.now() / 1000));
+  const ended = now >= BigInt(deadline);
+  const success = ended && BigInt(totalRaised) >= BigInt(goal);
+  const failed = ended && BigInt(totalRaised) < BigInt(goal);
+  const pct = progressPercent(totalRaised, goal);
+  const isCreator = account?.toLowerCase() === creator?.toLowerCase();
+  const category = getCampaignCategory(campaign.id);
+  const displayTitle = campaign.title || getCampaignName(campaign.id);
+  const displayDesc = campaign.description || getCampaignDescription(campaign.id);
+  const creatorName = getCreatorName(creator);
 
   return (
-    <div className="flex flex-col gap-6 max-w-3xl mx-auto">
-      {/* Back */}
-      <button
-        onClick={() => router.push("/")}
-        className="self-start text-sm text-gray-500 dark:text-gray-400 hover:text-indigo-600 transition-colors"
-      >
-        ← All Campaigns
-      </button>
+    <main className="bg-white min-h-screen pt-24 pb-20">
+      <div className="max-w-6xl mx-auto px-6">
+        <motion.button
+          onClick={() => router.push("/explore")}
+          className="flex items-center gap-2 text-sm text-gray-500 hover:text-emerald-600 transition-colors mb-6"
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          All Campaigns
+        </motion.button>
 
-      {/* Header card */}
-      <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-sm">
-        <div className={`h-2 w-full ${success ? "bg-green-500" : failed ? "bg-red-400" : "bg-indigo-500"}`}>
-          <div
-            className={`h-full ${success ? "bg-green-500" : failed ? "bg-red-400" : "bg-indigo-500"}`}
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-        <div className="p-6 flex flex-col gap-5">
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div>
-              <p className="text-xs text-gray-400 uppercase tracking-wide">Campaign</p>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mt-0.5">
-                #{campaign.id}
-              </h1>
-            </div>
+        {/* Banner */}
+        <motion.div
+          className={`relative aspect-[21/9] rounded-3xl overflow-hidden mb-8 ${
+            image ? "bg-gray-100" : `bg-gradient-to-br ${category.color}`
+          }`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {image && (
+            <img
+              src={image}
+              alt={displayTitle}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          <div className="absolute top-5 left-5 flex items-center gap-2">
+            <span className="badge bg-white/95 text-gray-900 backdrop-blur-sm">{category.name}</span>
             <StatusBadge success={success} failed={failed} withdrawn={withdrawn} />
           </div>
-
-          {/* Creator */}
-          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <span>Created by</span>
-            <span className="font-mono text-gray-800 dark:text-gray-200">
-              {shortAddress(creator, 8)}{isCreator && " (you)"}
-            </span>
+          <div className="absolute bottom-5 left-5 right-5">
+            <p className="text-white/80 text-xs font-medium uppercase tracking-wider mb-2">
+              Campaign #{campaign.id}
+            </p>
+            <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight drop-shadow-lg">
+              {displayTitle}
+            </h1>
           </div>
+        </motion.div>
 
-          {/* Progress */}
-          <div>
-            <div className="flex justify-between text-sm mb-2">
-              <span className="font-semibold text-gray-900 dark:text-white">
-                {formatEth(totalRaised)} ETH raised
-              </span>
-              <span className="text-gray-500">of {formatEth(goal)} ETH goal</span>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <motion.div
+            className="lg:col-span-2 flex flex-col gap-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <div className="bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-sm hover:border-emerald-200 transition-colors">
+              <h2 className="text-lg font-bold text-gray-900 mb-3">About this campaign</h2>
+              <p className="text-gray-600 leading-relaxed whitespace-pre-line">{displayDesc}</p>
             </div>
-            <div className="h-3 w-full rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all ${
-                  success ? "bg-green-500" : failed ? "bg-red-400" : "bg-indigo-500"
-                }`}
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-            <p className="text-right text-xs text-gray-400 mt-1">{pct.toFixed(1)}%</p>
-          </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <StatBox label="Goal"        value={`${formatEth(goal)} ETH`} />
-            <StatBox label="Raised"      value={`${formatEth(totalRaised)} ETH`} />
-            <StatBox
-              label="Deadline"
-              value={formatDeadline(deadline)}
-              sub={timeLeft(deadline)}
-              highlight={!ended}
-            />
-          </div>
+            <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 shadow-sm hover:border-emerald-200 transition-colors">
+              <p className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-3">Creator</p>
+              <div className="flex items-center gap-3">
+                <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${category.color} flex items-center justify-center text-white text-sm font-bold`}>
+                  {creatorName.split(" ").map((n) => n[0]).join("")}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {creatorName}
+                    {isCreator && <span className="ml-2 text-emerald-600 text-xs">(you)</span>}
+                  </p>
+                  <p className="text-xs text-gray-500 font-mono">{shortAddress(creator, 8)}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white border-2 border-gray-200 rounded-2xl p-8 shadow-sm hover:border-emerald-200 transition-colors">
+              <div className="flex items-end justify-between mb-4">
+                <div>
+                  <p className="text-3xl font-bold text-gray-900">{formatEth(totalRaised)} ETH</p>
+                  <p className="text-sm text-gray-500 mt-1">raised of {formatEth(goal)} ETH goal</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-emerald-600">{pct.toFixed(1)}%</p>
+                  <p className="text-xs text-gray-500">funded</p>
+                </div>
+              </div>
+              <div className="h-2 w-full rounded-full bg-gray-100 overflow-hidden">
+                <motion.div
+                  className={`h-full rounded-full ${
+                    success
+                      ? "bg-gradient-to-r from-emerald-500 to-green-400"
+                      : failed
+                      ? "bg-gradient-to-r from-red-500 to-rose-400"
+                      : "bg-gradient-to-r from-emerald-500 to-teal-500"
+                  }`}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(pct, 100)}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 mt-6">
+                <StatBox label="Goal" value={`${formatEth(goal)} ETH`} />
+                <StatBox label="Raised" value={`${formatEth(totalRaised)} ETH`} />
+                <StatBox
+                  label="Deadline"
+                  value={formatDeadline(deadline)}
+                  sub={timeLeft(deadline)}
+                  highlight={!ended}
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="flex flex-col gap-5 lg:sticky lg:top-24 lg:self-start"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            {!ended && (
+              <ActionCard title="Fund this Campaign" accent="emerald">
+                <DonateForm campaignId={campaign.id} onFunded={refetch} />
+              </ActionCard>
+            )}
+
+            {success && isCreator && !withdrawn && (
+              <ActionCard title="Withdraw Funds" accent="emerald">
+                <WithdrawButton campaign={campaign} onWithdrawn={refetch} />
+              </ActionCard>
+            )}
+
+            {success && withdrawn && (
+              <ActionCard title="Funds Withdrawn" accent="gray">
+                <p className="text-sm text-gray-600">All funds have been successfully withdrawn by the creator.</p>
+              </ActionCard>
+            )}
+
+            {failed && (
+              <ActionCard title="Claim Refund" accent="red">
+                <RefundButton campaign={campaign} onRefunded={refetch} />
+              </ActionCard>
+            )}
+
+            {ended && !failed && !success && (
+              <ActionCard title="Campaign Ended" accent="gray">
+                <p className="text-sm text-gray-600">This campaign has ended.</p>
+              </ActionCard>
+            )}
+
+            <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6">
+              <h3 className="text-sm font-bold text-gray-900 mb-3">How it works</h3>
+              <ul className="text-sm text-gray-700 space-y-2">
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">1.</span>
+                  Connect your wallet and send ETH
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">2.</span>
+                  If the goal is met, the creator withdraws
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-emerald-600 font-bold">3.</span>
+                  If it fails, you get a full refund
+                </li>
+              </ul>
+            </div>
+          </motion.div>
         </div>
       </div>
-
-      {/* Action panels */}
-      {!ended && (
-        <Section title="Fund this Campaign">
-          <DonateForm campaignId={campaign.id} onFunded={refetch} />
-        </Section>
-      )}
-
-      {success && !withdrawn && isCreator && (
-        <Section title="Withdraw Funds" accent="green">
-          <WithdrawButton campaign={campaign} onWithdrawn={refetch} />
-        </Section>
-      )}
-
-      {success && withdrawn && (
-        <Section title="Withdraw Funds" accent="gray">
-          <WithdrawButton campaign={campaign} onWithdrawn={refetch} />
-        </Section>
-      )}
-
-      {failed && (
-        <Section title="Claim Refund" accent="red">
-          <RefundButton campaign={campaign} onRefunded={refetch} />
-        </Section>
-      )}
-    </div>
+    </main>
   );
 }
 
-function Section({ title, children, accent = "indigo" }) {
-  const colors = {
-    indigo: "text-indigo-700 dark:text-indigo-400 border-indigo-100 dark:border-indigo-900",
-    green:  "text-green-700 dark:text-green-400 border-green-100 dark:border-green-900",
-    red:    "text-red-700 dark:text-red-400 border-red-100 dark:border-red-900",
-    gray:   "text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-800",
+function ActionCard({ title, accent, children }) {
+  const borderMap = {
+    emerald: "border-emerald-200",
+    red: "border-red-200",
+    gray: "border-gray-200",
   };
   return (
-    <div className={`rounded-xl border bg-white dark:bg-gray-900 p-6 shadow-sm ${colors[accent]}`}>
-      <h2 className={`text-base font-semibold mb-4 ${colors[accent].split(" ")[0]} ${colors[accent].split(" ")[1]}`}>
-        {title}
-      </h2>
+    <div className={`bg-white border-2 rounded-2xl p-6 shadow-sm ${borderMap[accent] || borderMap.gray}`}>
+      <h3 className="text-base font-bold text-gray-900 mb-4">{title}</h3>
       {children}
     </div>
   );
@@ -164,11 +239,11 @@ function Section({ title, children, accent = "indigo" }) {
 
 function StatBox({ label, value, sub, highlight }) {
   return (
-    <div className="rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-2">
-      <p className="text-xs text-gray-400 mb-0.5">{label}</p>
-      <p className="text-sm font-semibold text-gray-900 dark:text-white">{value}</p>
+    <div className="rounded-xl bg-gray-50 border-2 border-gray-200 px-4 py-3">
+      <p className="text-xs text-gray-500 mb-1">{label}</p>
+      <p className="text-sm font-semibold text-gray-900">{value}</p>
       {sub && (
-        <p className={`text-xs mt-0.5 ${highlight ? "text-indigo-500" : "text-gray-400"}`}>
+        <p className={`text-xs mt-0.5 ${highlight ? "text-emerald-600" : "text-gray-500"}`}>
           {sub}
         </p>
       )}
@@ -177,43 +252,33 @@ function StatBox({ label, value, sub, highlight }) {
 }
 
 function StatusBadge({ success, failed, withdrawn }) {
-  if (withdrawn)
-    return <Badge color="gray" label="Withdrawn" />;
-  if (success)
-    return <Badge color="green" label="Goal Reached" />;
-  if (failed)
-    return <Badge color="red" label="Failed" />;
-  return <Badge color="indigo" label="Active" />;
-}
-
-function Badge({ color, label }) {
-  const map = {
-    gray:   "bg-gray-100 dark:bg-gray-800 text-gray-500",
-    green:  "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400",
-    red:    "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400",
-    indigo: "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400",
-  };
-  return (
-    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${map[color]}`}>
-      {label}
-    </span>
-  );
+  if (withdrawn) {
+    return <span className="badge bg-gray-700/90 text-white backdrop-blur-sm">Withdrawn</span>;
+  }
+  if (success) {
+    return <span className="badge bg-emerald-500/95 text-white backdrop-blur-sm">Goal Reached</span>;
+  }
+  if (failed) {
+    return <span className="badge bg-red-500/95 text-white backdrop-blur-sm">Failed</span>;
+  }
+  return <span className="badge bg-emerald-500/95 text-white backdrop-blur-sm">Active</span>;
 }
 
 function PageSkeleton() {
   return (
-    <div className="flex flex-col gap-6 max-w-3xl mx-auto animate-pulse">
-      <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded" />
-      <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 flex flex-col gap-4">
-        <div className="h-8 w-24 bg-gray-200 dark:bg-gray-700 rounded" />
-        <div className="h-3 w-full bg-gray-100 dark:bg-gray-800 rounded" />
-        <div className="h-3 w-3/4 bg-gray-100 dark:bg-gray-800 rounded" />
-        <div className="grid grid-cols-3 gap-3">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-14 bg-gray-100 dark:bg-gray-800 rounded-lg" />
-          ))}
+    <main className="bg-white min-h-screen pt-24 pb-20">
+      <div className="max-w-6xl mx-auto px-6 animate-pulse">
+        <div className="h-4 w-28 bg-gray-100 rounded mb-6" />
+        <div className="aspect-[21/9] bg-gray-100 rounded-3xl mb-8" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 flex flex-col gap-6">
+            <div className="h-32 bg-gray-100 rounded-2xl" />
+            <div className="h-24 bg-gray-100 rounded-2xl" />
+            <div className="h-48 bg-gray-100 rounded-2xl" />
+          </div>
+          <div className="h-64 bg-gray-100 rounded-2xl" />
         </div>
       </div>
-    </div>
+    </main>
   );
 }

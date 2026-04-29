@@ -84,15 +84,15 @@ export default function CreateCampaign({ onCreated }) {
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-5">
+    <div className="glass-card rounded-2xl p-6">
+      <h2 className="text-lg font-semibold text-white mb-5">
         Create Campaign
       </h2>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         {/* Goal */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-medium text-gray-300">
             Funding Goal (ETH)
           </label>
           <input
@@ -104,13 +104,13 @@ export default function CreateCampaign({ onCreated }) {
             onChange={(e) => setGoal(e.target.value)}
             disabled={loading}
             required
-            className="rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+            className="input-field"
           />
         </div>
 
         {/* Duration */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-medium text-gray-300">
             Duration (seconds)
           </label>
           <div className="flex flex-wrap gap-2 mb-2">
@@ -120,10 +120,10 @@ export default function CreateCampaign({ onCreated }) {
                 type="button"
                 onClick={() => setDuration(String(p.value))}
                 disabled={loading}
-                className={`rounded-md px-3 py-1 text-xs font-medium border transition-colors disabled:opacity-50 ${
+                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all disabled:opacity-50 ${
                   duration === String(p.value)
-                    ? "bg-indigo-600 text-white border-indigo-600"
-                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-700 hover:border-indigo-400"
+                    ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-500/20"
+                    : "bg-white/[0.04] border border-white/[0.08] text-gray-400 hover:bg-white/[0.08]"
                 }`}
               >
                 {p.label}
@@ -139,22 +139,22 @@ export default function CreateCampaign({ onCreated }) {
             onChange={(e) => setDuration(e.target.value)}
             disabled={loading}
             required
-            className="rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+            className="input-field"
           />
         </div>
 
         {/* Error */}
         {error && (
-          <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+          <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
             {error}
           </div>
         )}
 
         {/* Success */}
         {txHash && campaignId !== null && (
-          <div className="rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-4 py-3 text-sm text-green-700 dark:text-green-400 flex flex-col gap-1">
+          <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 text-sm text-emerald-400 flex flex-col gap-1">
             <span className="font-medium">Campaign #{campaignId} created!</span>
-            <span className="font-mono text-xs break-all text-green-600 dark:text-green-500">
+            <span className="font-mono text-xs break-all text-emerald-500">
               Tx: {txHash}
             </span>
           </div>
@@ -162,7 +162,7 @@ export default function CreateCampaign({ onCreated }) {
 
         {/* Pending tx (waiting for confirmation) */}
         {txHash && campaignId === null && loading && (
-          <div className="rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 px-4 py-3 text-sm text-yellow-700 dark:text-yellow-400 font-mono break-all">
+          <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-3 text-sm text-amber-400 font-mono break-all">
             Confirming… {txHash}
           </div>
         )}
@@ -171,7 +171,7 @@ export default function CreateCampaign({ onCreated }) {
         <button
           type="submit"
           disabled={loading}
-          className="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+          className="btn-primary w-full text-sm py-3 flex items-center justify-center gap-2 disabled:opacity-40"
         >
           {loading ? (
             <>

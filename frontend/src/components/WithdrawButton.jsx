@@ -68,9 +68,9 @@ export default function WithdrawButton({ campaign, onWithdrawn }) {
 
   if (alreadyDone && txHash) {
     return (
-      <div className="rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-4 py-3 text-sm text-green-700 dark:text-green-400">
+      <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 text-sm text-emerald-400">
         <p className="font-medium">Withdrawal successful!</p>
-        <p className="font-mono text-xs break-all mt-1 text-green-600 dark:text-green-500">
+        <p className="font-mono text-xs break-all mt-1 text-emerald-500">
           Tx: {txHash}
         </p>
       </div>
@@ -79,7 +79,7 @@ export default function WithdrawButton({ campaign, onWithdrawn }) {
 
   if (alreadyDone) {
     return (
-      <div className="rounded-lg bg-gray-100 dark:bg-gray-800 px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+      <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] px-4 py-3 text-sm text-gray-400">
         Funds already withdrawn.
       </div>
     );
@@ -97,28 +97,28 @@ export default function WithdrawButton({ campaign, onWithdrawn }) {
 
       {/* Amount to receive */}
       {canWithdraw && (
-        <div className="rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-4 py-2 text-sm text-green-700 dark:text-green-400">
+        <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-sm text-emerald-400">
           You will receive <span className="font-semibold">{formatEth(totalRaised)} ETH</span>
         </div>
       )}
 
       {/* Block reason */}
       {blockReason && !canWithdraw && (
-        <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-lg px-3 py-2">
+        <p className="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2">
           {blockReason}
         </p>
       )}
 
       {/* Pending */}
       {txHash && loading && (
-        <div className="rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 px-4 py-2 text-xs text-yellow-700 dark:text-yellow-400 font-mono break-all">
+        <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-xs text-amber-400 font-mono break-all">
           Confirming… {txHash}
         </div>
       )}
 
       {/* Error */}
       {error && (
-        <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-2 text-sm text-red-600 dark:text-red-400">
+        <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-2 text-sm text-red-400">
           {error}
         </div>
       )}
@@ -126,7 +126,7 @@ export default function WithdrawButton({ campaign, onWithdrawn }) {
       <button
         onClick={handleWithdraw}
         disabled={!canWithdraw || loading}
-        className="rounded-lg bg-green-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+        className="w-full rounded-xl bg-gradient-to-r from-emerald-600 to-green-500 px-4 py-3 text-sm font-semibold text-white hover:shadow-lg hover:shadow-emerald-500/25 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
       >
         {loading ? (
           <>
@@ -145,8 +145,8 @@ function Check({ label, ok }) {
   return (
     <div className={`flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium
       ${ok
-        ? "bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400"
-        : "bg-gray-100 dark:bg-gray-800 text-gray-400"
+        ? "bg-emerald-500/10 text-emerald-400"
+        : "bg-white/[0.04] text-gray-500"
       }`}
     >
       <span>{ok ? "✓" : "○"}</span>

@@ -1,8 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Web3Provider } from "@/context/Web3Context";
-import ConnectWallet from "@/components/ConnectWallet";
-import Link from "next/link";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Crowdfunding dApp",
-  description: "Decentralized crowdfunding on Ethereum",
+  title: "FundChain — Decentralized Crowdfunding Platform",
+  description: "Raise capital, invest in innovation, and support early-stage startups on Ethereum with complete blockchain transparency.",
   icons: {
     icon: "/icon.svg",
   },
@@ -28,19 +28,13 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-gray-50 dark:bg-gray-950">
+      <body className="min-h-full flex flex-col bg-white">
         <Web3Provider>
-          <header className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-              <Link href="/" className="text-lg font-semibold">
-                Crowdfunding dApp
-              </Link>
-              <ConnectWallet />
-            </div>
-          </header>
-          <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8">
+          <Header />
+          <main className="flex-1">
             {children}
           </main>
+          <Footer />
         </Web3Provider>
       </body>
     </html>

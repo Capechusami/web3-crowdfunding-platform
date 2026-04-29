@@ -69,8 +69,8 @@ export default function DonateForm({ campaignId: propId, onFunded }) {
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-5">
+    <div>
+      <h2 className="text-lg font-semibold text-gray-900 mb-5">
         Fund a Campaign
       </h2>
 
@@ -78,7 +78,7 @@ export default function DonateForm({ campaignId: propId, onFunded }) {
         {/* Campaign ID */}
         {!isIdControlled && (
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="text-sm font-medium text-gray-700">
               Campaign ID
             </label>
             <input
@@ -90,15 +90,15 @@ export default function DonateForm({ campaignId: propId, onFunded }) {
               onChange={(e) => setCampaignId(e.target.value)}
               disabled={loading}
               required
-              className="rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+              className="input-field"
             />
           </div>
         )}
 
         {isIdControlled && (
-          <div className="flex items-center gap-2 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2">
-            <span className="text-xs text-gray-400 uppercase tracking-wide">Campaign</span>
-            <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+          <div className="flex items-center gap-2 rounded-xl bg-emerald-50 border-2 border-emerald-200 px-4 py-2.5">
+            <span className="text-xs text-gray-600 uppercase tracking-wide font-medium">Campaign</span>
+            <span className="text-sm font-bold text-emerald-700">
               #{propId}
             </span>
           </div>
@@ -106,7 +106,7 @@ export default function DonateForm({ campaignId: propId, onFunded }) {
 
         {/* ETH Amount */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-medium text-gray-700">
             Amount (ETH)
           </label>
           <div className="relative">
@@ -119,14 +119,14 @@ export default function DonateForm({ campaignId: propId, onFunded }) {
               onChange={(e) => setAmount(e.target.value)}
               disabled={loading}
               required
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 pr-14 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
+              className="input-field pr-14"
             />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-400">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-gray-500">
               ETH
             </span>
           </div>
           {amount && parseFloat(amount) > 0 && (
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-gray-500">
               ≈ {formatEth(parseEth(amount))} ETH will be sent
             </p>
           )}
@@ -134,14 +134,14 @@ export default function DonateForm({ campaignId: propId, onFunded }) {
 
         {/* Error */}
         {error && (
-          <div className="rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+          <div className="rounded-xl bg-red-50 border-2 border-red-200 px-4 py-3 text-sm text-red-600">
             {error}
           </div>
         )}
 
         {/* Pending */}
         {txHash && !success && loading && (
-          <div className="rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 px-4 py-3 text-sm text-yellow-700 dark:text-yellow-400">
+          <div className="rounded-xl bg-amber-50 border-2 border-amber-200 px-4 py-3 text-sm text-amber-700">
             <p className="font-medium mb-0.5">Confirming transaction…</p>
             <p className="font-mono text-xs break-all">{txHash}</p>
           </div>
@@ -149,11 +149,11 @@ export default function DonateForm({ campaignId: propId, onFunded }) {
 
         {/* Success */}
         {success && txHash && (
-          <div className="rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-4 py-3 text-sm text-green-700 dark:text-green-400">
+          <div className="rounded-xl bg-emerald-50 border-2 border-emerald-200 px-4 py-3 text-sm text-emerald-700">
             <p className="font-medium mb-0.5">
               Successfully funded campaign #{campaignId}!
             </p>
-            <p className="font-mono text-xs break-all text-green-600 dark:text-green-500">
+            <p className="font-mono text-xs break-all text-emerald-600">
               Tx: {txHash}
             </p>
           </div>
@@ -163,7 +163,7 @@ export default function DonateForm({ campaignId: propId, onFunded }) {
         <button
           type="submit"
           disabled={loading}
-          className="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+          className="btn-primary w-full text-sm py-3 flex items-center justify-center gap-2 disabled:opacity-40"
         >
           {loading ? (
             <>

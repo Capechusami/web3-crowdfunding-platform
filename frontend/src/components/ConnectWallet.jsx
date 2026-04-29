@@ -26,7 +26,7 @@ export default function ConnectWallet() {
         href="https://metamask.io/download"
         target="_blank"
         rel="noreferrer"
-        className="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 transition-colors"
+        className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 text-sm font-medium text-white hover:shadow-lg hover:shadow-amber-500/25 transition-all"
       >
         <MetaMaskIcon />
         Install MetaMask
@@ -40,7 +40,7 @@ export default function ConnectWallet() {
         <button
           onClick={connect}
           disabled={isConnecting}
-          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+          className="inline-flex items-center gap-2 btn-primary text-sm px-4 py-2 disabled:opacity-50"
         >
           <MetaMaskIcon />
           {isConnecting ? "Connecting…" : "Connect Wallet"}
@@ -57,7 +57,7 @@ export default function ConnectWallet() {
       <div className="flex flex-col items-end gap-1">
         <button
           onClick={switchNetwork}
-          className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-500 px-4 py-2 text-sm font-medium text-white hover:shadow-lg hover:shadow-red-500/25 transition-all"
         >
           <WarnIcon />
           Wrong Network — Switch
@@ -73,25 +73,25 @@ export default function ConnectWallet() {
     <div className="relative">
       <button
         onClick={() => setShowDropdown((v) => !v)}
-        className="inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:border-emerald-400 hover:bg-emerald-50 transition-all shadow-sm"
       >
-        <span className="h-2 w-2 rounded-full bg-green-500 shrink-0" />
-        <span className="font-mono">{shortAddress(account)}</span>
+        <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
+        <span className="font-mono font-medium">{shortAddress(account)}</span>
         <ChevronIcon open={showDropdown} />
       </button>
 
       {showDropdown && (
-        <div className="absolute right-0 mt-2 w-60 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-lg z-50 overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-            <p className="text-xs text-gray-400 uppercase tracking-wide">Connected</p>
-            <p className="font-mono text-sm text-gray-800 dark:text-gray-100 break-all mt-0.5">
+        <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-white border border-gray-100 shadow-xl z-50 overflow-hidden">
+          <div className="px-4 py-3 border-b border-gray-100">
+            <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">Connected</p>
+            <p className="font-mono text-xs text-gray-900 break-all mt-1">
               {account}
             </p>
           </div>
-          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-            <p className="text-xs text-gray-400 uppercase tracking-wide">Network</p>
-            <p className="text-sm text-gray-800 dark:text-gray-100 mt-0.5">
-              Chain ID <span className="font-mono">{chainId}</span>
+          <div className="px-4 py-3 border-b border-gray-100">
+            <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">Network</p>
+            <p className="text-sm text-gray-900 mt-1">
+              Chain ID <span className="font-mono font-medium">{chainId}</span>
             </p>
           </div>
           <button
@@ -99,7 +99,7 @@ export default function ConnectWallet() {
               disconnect();
               setShowDropdown(false);
             }}
-            className="w-full px-4 py-3 text-left text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            className="w-full px-4 py-3 text-left text-sm text-red-600 hover:bg-red-50 transition-colors font-medium"
           >
             Disconnect
           </button>

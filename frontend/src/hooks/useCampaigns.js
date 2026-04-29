@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useContract } from "./useContract";
+import { getCampaignMetadata } from "@/utils/campaignStorage";
 
 /**
  * Fetches all campaigns from the contract.
@@ -24,14 +25,20 @@ export function useCampaigns(refreshKey) {
         Array.from({ length: total }, (_, i) => contract.getCampaign(i))
       );
       setCampaigns(
-        results.map((c, i) => ({
-          id: i,
-          creator: c.creator,
-          goal: c.goal,
-          deadline: c.deadline,
-          totalRaised: c.totalRaised,
-          withdrawn: c.withdrawn,
-        }))
+        results.map((c, i) => {
+          const meta = getCampaignMetadata(i) || {};
+          return {
+            id: i,
+            creator: c.creator,
+            goal: c.goal,
+            deadline: c.deadline,
+            totalRaised: c.totalRaised,
+            withdrawn: c.withdrawn,
+            title: meta.title || null,
+            description: meta.description || null,
+            image: meta.image || null,
+          };
+        })
       );
     } catch (e) {
       setError(e?.message || "Failed to load campaigns");
@@ -63,6 +70,7 @@ export function useCampaign(id) {
     setError(null);
     try {
       const c = await contract.getCampaign(id);
+      const meta = getCampaignMetadata(Number(id)) || {};
       setCampaign({
         id: Number(id),
         creator: c.creator,
@@ -70,6 +78,9 @@ export function useCampaign(id) {
         deadline: c.deadline,
         totalRaised: c.totalRaised,
         withdrawn: c.withdrawn,
+        title: meta.title || null,
+        description: meta.description || null,
+        image: meta.image || null,
       });
     } catch (e) {
       setError(e?.message || "Campaign not found");
