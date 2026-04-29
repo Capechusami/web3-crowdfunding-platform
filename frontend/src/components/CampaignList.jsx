@@ -62,14 +62,16 @@ export default function CampaignList({ refreshKey, limit, showHeader = true }) {
 
 function ListHeader({ count, onRefresh }) {
   return (
-    <div className="flex items-center justify-between mb-8">
+    <div className="flex items-center justify-between mb-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">All Campaigns</h2>
-        <p className="text-sm text-gray-500 mt-1">{count} campaign{count !== 1 ? "s" : ""} on-chain</p>
+        <h2 className="text-2xl font-bold text-white">
+          All Campaigns
+        </h2>
+        <p className="text-sm text-gray-500 mt-0.5">{count} campaign{count !== 1 ? "s" : ""} on-chain</p>
       </div>
       <button
         onClick={onRefresh}
-        className="flex items-center gap-2 rounded-xl bg-gray-50 border border-gray-200 px-4 py-2.5 text-xs font-medium text-gray-600 hover:text-emerald-600 hover:border-emerald-200 hover:bg-emerald-50 transition-all"
+        className="flex items-center gap-2 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 py-2 text-xs font-medium text-gray-400 hover:text-white hover:bg-white/[0.08] transition-all"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M23 4v6h-6M1 20v-6h6" />
@@ -83,17 +85,21 @@ function ListHeader({ count, onRefresh }) {
 
 function SkeletonCard() {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden animate-pulse shadow-sm">
-      <div className="aspect-[4/3] bg-gray-100" />
-      <div className="p-5">
-        <div className="h-5 w-3/4 bg-gray-100 rounded mb-3" />
-        <div className="h-3 w-full bg-gray-50 rounded mb-1" />
-        <div className="h-3 w-2/3 bg-gray-50 rounded mb-5" />
-        <div className="h-2 w-full bg-gray-100 rounded-full mb-4" />
-        <div className="flex justify-between pt-4 border-t border-gray-100">
-          <div className="h-3 w-20 bg-gray-100 rounded" />
-          <div className="h-8 w-20 bg-gray-100 rounded-full" />
+    <div className="rounded-2xl glass-card p-6 animate-pulse">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="h-5 w-16 bg-white/[0.06] rounded-full" />
+        <div className="h-5 w-14 bg-white/[0.06] rounded-full" />
+      </div>
+      <div className="h-5 w-3/4 bg-white/[0.06] rounded mb-3" />
+      <div className="h-3 w-full bg-white/[0.04] rounded mb-1" />
+      <div className="h-3 w-2/3 bg-white/[0.04] rounded mb-5" />
+      <div className="h-2 w-full bg-white/[0.06] rounded-full mb-4" />
+      <div className="flex justify-between pt-4 border-t border-white/[0.04]">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 bg-white/[0.06] rounded-full" />
+          <div className="h-3 w-20 bg-white/[0.04] rounded" />
         </div>
+        <div className="h-6 w-16 bg-white/[0.04] rounded-lg" />
       </div>
     </div>
   );

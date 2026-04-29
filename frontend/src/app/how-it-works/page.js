@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import AnimatedSection, { StaggerContainer, StaggerItem } from "@/components/ui/AnimatedSection";
 import Link from "next/link";
+import Image from "next/image";
 
 /* ─── Lifecycle Steps ─── */
 const LIFECYCLE = [

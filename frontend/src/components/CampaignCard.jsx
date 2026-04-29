@@ -23,7 +23,7 @@ export default function CampaignCard({ campaign }) {
     <motion.div whileHover={{ y: -6 }} transition={{ duration: 0.2 }}>
       <Link
         href={`/campaign/${id}`}
-        className="group block bg-white border-2 border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all h-full"
+        className="group block bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl transition-shadow h-full"
       >
         {/* Image area */}
         <div className={`relative aspect-[4/3] overflow-hidden ${image ? "bg-gray-100" : `bg-gradient-to-br ${category.color}`}`}>

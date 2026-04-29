@@ -9,8 +9,8 @@ import ConnectWallet from "@/components/ConnectWallet";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/explore", label: "Explore" },
+  { href: "/create", label: "Start a Campaign" },
   { href: "/how-it-works", label: "How it works" },
-  { href: "/about", label: "About" },
 ];
 
 export default function Header() {
