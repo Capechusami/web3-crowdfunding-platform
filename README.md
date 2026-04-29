@@ -1,4 +1,11 @@
-# Crowdfunding dApp
+# FundChain — Decentralized Crowdfunding Platform
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-fundchain--livid.vercel.app-emerald?style=for-the-badge&logo=vercel)](https://fundchain-livid.vercel.app)
+[![Network](https://img.shields.io/badge/Network-Sepolia%20Testnet-blue?style=for-the-badge&logo=ethereum)](https://sepolia.etherscan.io/address/0xeD4EcC76f28e47Ba4bb2c8f63fA79d0b57066bAa)
+
+> **Live App:** https://fundchain-livid.vercel.app
+>
+> **Contract:** [`0xeD4EcC76f28e47Ba4bb2c8f63fA79d0b57066bAa`](https://sepolia.etherscan.io/address/0xeD4EcC76f28e47Ba4bb2c8f63fA79d0b57066bAa) on Ethereum Sepolia
 
 A production-ready, fully decentralized crowdfunding platform built on Ethereum. Campaign creators can raise ETH with a goal and deadline. Contributors can fund active campaigns and claim refunds if the goal is not met. Creators withdraw funds only on success.
 
