@@ -1,6 +1,9 @@
 <div align="center">
 
 # FundChain
+### Web Programming(CSEFg4305) Group Project
+### Name : Samuel Tesfachew
+### Id.no : UGR/31190/15
 
 ### Decentralized Crowdfunding Platform on Ethereum
 
